@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Lobster+Two&display=swap" rel="stylesheet"> 
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> Flack </title> 
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"
+    integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+  <!-- <script src="{{ url_for('static', filename='script.js') }}"> </script> -->
+    <script>
+        
+        document.addEventListener('DOMContentLoaded', () => {
+        
+            alert("Add a channel to get started")
+        
+            var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+                var currentChannel = "  "
+                    socket.on('connect', () => {
+                
+                    document.querySelector('#send').onclick = () => {
+                        let time = new Date()
+                        time = time.getHours() + ":" + time.getMinutes() + ":" + time.getSeconds()
+                        let msg = document.querySelector('#input').value;
+                        if(msg.length > 1) {
+                         // document.querySelector('#input').value = " ";   
+                            socket.emit('send message', { 'message': msg, 'time': time, channel : currentChannel })
+                            }
+                        }
+
+                document.querySelector('#send2').onclick = () => {
+                    let channel = document.querySelector('#input2').value;
+                    console.log(document.querySelector('#msglist').children)
+                    console.log(document.querySelector('#msglist').children[0])
+                    if(document.querySelector('#msglist').children) {
+                        console.log("a")
+                    } else {
+                        console.log("b")
+                    }
+                    console.log(typeof(document.querySelector('#msglist').children))
+                    if(channel.length > 1) {
+                        document.querySelector('#input2').value = " ";
+                         socket.emit('add_channel', {'channel': channel} )
+                      }
+                    }   
+                });
+
+                //Adds the channel
+                 socket.on('add', channel => {
+                    let li = document.createElement('li')
+                    li.innerHTML = channel;
+                    li.onclick = addroom;
+                    document.querySelector('#channel-list').append(li)
+                });
+
+                //Adds the message
+                socket.on('addmsg', messages => {
+                    let len = messages.length
+                    len = len - 1;
+                    let li = document.createElement('li')
+                    let p = document.createElement('p')
+                    let p2 = document.createElement('p')
+                    p.innerHTML = messages[len - 1];
+                    p2.innerHTML = messages[len];
+                    li.innerHTML = messages[len - 2];
+                    document.querySelector('#msglist').append(li)
+                    document.querySelector('#msglist').append(p)
+                    document.querySelector('#msglist').append(p2) 
+               });
+
+               socket.on('joined', data => {
+                    console.log(data)
+               });
+
+               socket.on('error', msg => {
+                  alert(msg);
+               });
+
+    function addroom() {
+                let channelname = this.innerHTML;
+                currentChannel = channelname;
+                console.log(currentChannel)
+
+            console.log(typeof(document.querySelector('#msgist')))
+             console.log(document.querySelector('#msgist'))
+
+
+
+                socket.emit('join', { 'room': channelname })
+       }           
+    });  
+    </script>
+</head>
+
+<body>
+    <main class="main"> </main>
+    <header>
+        <nav class="nav-bar">
+            <a href="{{ url_for('login') }}" class="link">
+                <li class="mini-block">
+                    Login
+                </li>
+            </a>
+            <a href="{{ url_for('logout') }}"">
+                <li class="mini-block">
+                    Logout
+                </li>
+            </a>
+        </nav>
+    </header>
+
+    <section class="section">
+        <h3 class="head"> Flack Messenger </h3>
+    </section>
+
+    <div class="section-row">
+        <section class="list" id = sec2>
+            <ul id="channel-list">
+            
+            </ul>
+        </section>
+        
+        <section class="msg-container" id="sec">
+            <ul id="msglist">
+            
+            </ul>
+        </section>   
+    </div>
+
+        <div class="form1">
+            <input class="mini-block" id="input" type="text" placeholder="Please type a message" name="text" />
+            <button class="mini-block2" type="submit" id="send">
+            <p class="mini-block2"> Send </p>
+            </button>
+        </div>
+
+        <div class="form1">
+            <label> Create channel </label>
+            <input class="mini-block" id="input2" type="text" placeholder="Please type a message" name="text" />
+            <button class="mini-block2" type="submit" id="send2">
+                <span class="mini-block2"> Send </span>
+            </button>
+        </div>
+
+    <footer class="footer">
+        <p> Coded by Mark Mascarenhas </p>
+    </footer>
+</body>
+</html>

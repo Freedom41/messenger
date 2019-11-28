@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link href="https://fonts.googleapis.com/css?family=Lobster+Two&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> Flack </title>
+</head>
+
+<body>
+    <main class="main"> </main>
+    <header>
+        <nav class="nav-bar">
+            <a href="{{ url_for( 'login' )}}">
+                <li class="mini-block">
+                    Login
+                </li>
+            </a>
+
+            <a>
+        <a href="{{ url_for('logout') }}">
+            <li class="mini-block">
+                    Logout
+                </li>
+            </a>
+        </nav>
+    </header>
+
+    <section class="section">
+        <div class="channelist">
+            
+        </div>
+        <div class="messages"> 
+
+        </div>
+
+        <form class="form" action="{{ url_for( 'user' )}}" method="POST">
+           <h2> Enter a display name to proceed </h2>
+            <input class="input" type="text" name="name" placeholder="Enter a display name">  
+            <button class="submit"> Submit </button>
+        </form>
+    </section>
+
+    <footer class="footer" style="position: absolute">
+        <p> Coded by Mark Mascarenhas </p>
+    </footer>
+</body>
+
+</html>
